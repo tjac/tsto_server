@@ -8,7 +8,6 @@ Before you run this program, you will need a few things:
 3) Install the following packages using these pip commands:
    a. pip install flask
    b. pip install flask-inflate
-   c. pip install requests
 4) Download a copy of the APK of the game (https://apkpure.com/the-simpsons%E2%84%A2-tapped-out/com.ea.game.simpsons4_row)
 5) Modify the APK to point to your local computer (use https://github.com/TappedOutReborn/Patch-Apk) for the NEW_GAMESERVER_URL (e.g. http://1.1.1.1) but leave the NEW_DLCSERVER_URL as http://oct2018-4-35-0-uam5h44a.tstodlc.eamobile.com/netstorage/gameasset/direct/simpsons/dlc/
 
