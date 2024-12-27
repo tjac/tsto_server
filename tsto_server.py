@@ -48,23 +48,23 @@ class TheSimpsonsTappedOutLocalServer:
     self.debug: bool = False
     self.run_tutorial: bool = False
 
-    self.session_key: str = str(uuid.uuid4())         # 7e95ce80-db2b-4e09-9554-ca5171004335
-    self.land_token: str = str(uuid.uuid4())          # b0687a40-3d16-49a6-ad81-c4524e997684
-    self.user_user_id: str = "".join([chr(random.randint(0x30,0x39)) for x in range(38)])       # 27606208852049386642878482000969586141
-    self.user_telemtry_id: str = "".join([chr(random.randint(0x30,0x39)) for x in range(11)])   # 11460983877
-    self.token_session_key: str = hashlib.md5(str(datetime.datetime.now()).encode("utf-8")).hexdigest()         # b00d0e085c3f79f21f4e405f765575e6
-    self.token_user_id: str = str(random.randint(1000000000000, 99999999999999))                # 1007072359901
-    self.token_authenticator_pid_id: int = random.randint(1000000000000, 99999999999999)        # 1016288386758
-    self.token_persona_id: int = random.randint(1000000000000, 99999999999999)                  # 1003650759901 (not a string)
-    self.token_telemetry_id: str = str(random.randint(1000000000000, 99999999999999))           # 1006990259901
-    self.personal_id: str = str(random.randint(1000000000000, 99999999999999))                  # 1009174947082
-    self.display_name: str = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for _ in range(random.randint(5,12))) # "gssincla-g"
-    self.persona_name: str = self.display_name.lower()                                               # gssinclag
-    self.me_persona_pid_id: str = str(random.randint(1000000000000, 99999999999999))            # 1007072559901
-    self.me_persona_display_name: str = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for _ in range(random.randint(5,12))) # "9BMtYCXtXKs3RSvD"
-    self.me_persona_name: str = self.me_persona_display_name.lower()                                 # 9bmtycxtxks3rsvd
-    self.me_persona_anonymous_id: str = base64.b64encode(hashlib.md5(self.me_persona_name.encode("utf-8")).digest()).decode("utf-8") # xdN+ZMOv2ykdR0rosKriDg==
-    self.device_id: str = hashlib.sha256(str(datetime.datetime.now()).encode("utf-8")).hexdigest()              # "3be24cfa8a1beadfc8a18ee2c9691096bf38919bc9c34d2efcea0a8e8d5ce409"
+    self.session_key: str = str(uuid.uuid4())
+    self.land_token: str = str(uuid.uuid4())
+    self.user_user_id: str = "".join([chr(random.randint(0x30,0x39)) for x in range(38)])
+    self.user_telemtry_id: str = "".join([chr(random.randint(0x30,0x39)) for x in range(11)])
+    self.token_session_key: str = hashlib.md5(str(datetime.datetime.now()).encode("utf-8")).hexdigest()
+    self.token_user_id: str = str(random.randint(1000000000000, 99999999999999))
+    self.token_authenticator_pid_id: int = random.randint(1000000000000, 99999999999999)
+    self.token_persona_id: int = random.randint(1000000000000, 99999999999999)
+    self.token_telemetry_id: str = str(random.randint(1000000000000, 99999999999999))
+    self.personal_id: str = str(random.randint(1000000000000, 99999999999999))
+    self.display_name: str = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for _ in range(random.randint(5,12)))
+    self.persona_name: str = self.display_name.lower()
+    self.me_persona_pid_id: str = str(random.randint(1000000000000, 99999999999999))
+    self.me_persona_display_name: str = ''.join(random.choice(string.ascii_uppercase + string.ascii_lowercase) for _ in range(random.randint(5,12)))
+    self.me_persona_name: str = self.me_persona_display_name.lower()
+    self.me_persona_anonymous_id: str = base64.b64encode(hashlib.md5(self.me_persona_name.encode("utf-8")).digest()).decode("utf-8")
+    self.device_id: str = hashlib.sha256(str(datetime.datetime.now()).encode("utf-8")).hexdigest()
   
     self.land_proto: LandData_pb2.LandMessage = LandData_pb2.LandMessage()
     if self.run_tutorial:
@@ -78,7 +78,14 @@ class TheSimpsonsTappedOutLocalServer:
       self.land_proto.friendData.boardwalkTileCount = 0
     else:
       with open("mytown.pb", "rb") as f:
-        #f.read(12)      # strip header for teamtsto.org generated protobuf images
+        # Check if we have a teamtsto.org backup.
+        header = f.read(2)
+        if header in (b'\x0a\x26', b'\x0a\x27', b'\x0a\x28'):
+          f.seek(0)
+        else:
+          f.seek(0x0c)  # strip the header off the protobuf if we do.
+
+        data = f.read()
         self.land_proto.ParseFromString(f.read())
 
 
