@@ -85,7 +85,6 @@ class TheSimpsonsTappedOutLocalServer:
         else:
           f.seek(0x0c)  # strip the header off the protobuf if we do.
 
-        data = f.read()
         self.land_proto.ParseFromString(f.read())
 
 
