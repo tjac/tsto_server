@@ -4,7 +4,7 @@
   "dlc_dir": "dlc",
   "towns_dir": "towns",
   "country": "US",
-
+  "reverse_proxy": false,
   "active_town": "mytown",
   
   "identifiers": {
@@ -347,7 +347,6 @@
       "nexus.connect",
       "synergy.director",
       "pin.aruba.url",
-      "nexus.proxy"]
-      
-
+      "nexus.proxy"
+  ]
 }
