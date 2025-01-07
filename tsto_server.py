@@ -23,22 +23,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # The Simpson's Tapped Out protobufs
-import AuthData_pb2
-import ClientConfigData_pb2
-import ClientLog_pb2
-import ClientMetrics_pb2
-import ClientTelemetry_pb2
-import Common_pb2
-import CustomerServiceData_pb2
-import Error_pb2
-import GambleData_pb2
-import GameplayConfigData_pb2
-import GetFriendData_pb2
-import LandData_pb2
-import MatchmakingData_pb2
-import OffersData_pb2
-import PurchaseData_pb2
-import WholeLandTokenData_pb2
+from proto import *
 
 
 class TheSimpsonsTappedOutLocalServer:
@@ -302,7 +287,7 @@ class TheSimpsonsTappedOutLocalServer:
     """
     
     # start server: http version
-    self.app.run(debug=True, host="0.0.0.0", port=80) #443, ssl_context=("mydomain.com.crt", "mydomain.com.key"))
+    self.app.run(debug=True, host="0.0.0.0", port=9000) #443, ssl_context=("mydomain.com.crt", "mydomain.com.key"))
     #threading.Thread(target=lambda: self.app.run(host="0.0.0.0", port=80, debug=True, use_reloader=False)).start()
     
     # start server: https version
