@@ -20,6 +20,7 @@ import uuid
 from flask import Flask, abort, jsonify, make_response, request, send_file
 from flask_inflate import Inflate       # pip install flask-inflate
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # The Simpson's Tapped Out protobufs
 import AuthData_pb2
@@ -42,7 +43,7 @@ import WholeLandTokenData_pb2
 
 class TheSimpsonsTappedOutLocalServer:
   
-  def __init__(self, server_ip: str):
+  def __init__(self, server_url: str):
     # Generate the Flask application object
     self.app = Flask(__name__)
     Inflate(self.app)     # Enable ability to auto decompress gzip responses
@@ -53,12 +54,13 @@ class TheSimpsonsTappedOutLocalServer:
     self.load_config()
 
     # Set the initial configuration
-    self.server_ip: bool = server_ip
+    self.server_url: bool = server_url
     self.debug: bool = self.config.get("debug", False)
     self.run_tutorial: bool = self.config.get("debug", False)
     self.dlc_dir: str = self.config.get("dlc_dir")
     self.towns_dir: str = self.config.get("towns_dir")
     self.town_filename: str = self.config.get("active_town")
+    self.reverse_proxy: bool = self.config.get("reverse_proxy", False)
 
     self.session_key: str = str(uuid.uuid4())
     self.land_token: str = str(uuid.uuid4())
@@ -83,6 +85,12 @@ class TheSimpsonsTappedOutLocalServer:
     self.land_proto: LandData_pb2.LandMessage = LandData_pb2.LandMessage()
     self.load_town()
 
+    # if behind a reverse proxy setup so that the correct IP is recorded
+    if self.reverse_proxy:
+      self.app.wsgi_app = ProxyFix(
+        self.app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+      )
+    
     # Add the URL routes for Flask
     self.add_routes()
 
@@ -353,7 +361,7 @@ class TheSimpsonsTappedOutLocalServer:
               "serverData": [
                   {
                       "key": "antelope.rtm.host",
-                      "value": f"http://{self.server_ip}:9000"
+                      "value": f"{self.server_url}"
                   },
                   {
                       "key": "applecert.url",
@@ -361,7 +369,7 @@ class TheSimpsonsTappedOutLocalServer:
                   },
                   {
                       "key": "origincasualapp.url",
-                      "value": f"http://{self.server_ip}/loader/mobile/ios/"
+                      "value": f"{self.server_ip}/loader/mobile/ios/"
                   },
                   {
                       "key": "akamai.url",
@@ -373,7 +381,7 @@ class TheSimpsonsTappedOutLocalServer:
 
     # Setup URL redirects to our server
     for key in self.config["server_redirects"]:
-      resp["serverData"].append({"key": key, "value": f"http://{self.server_ip}"})
+      resp["serverData"].append({"key": key, "value": f"{self.server_ip}"})
 
     return jsonify(resp)
 

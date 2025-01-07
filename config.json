@@ -4,9 +4,8 @@
   "dlc_dir": "dlc",
   "towns_dir": "towns",
   "country": "US",
-
+  "reverse_proxy": false,
   "game_assets_url": "/gameassets",
-
   "active_town": "mytown",
   
   "identifiers": {
@@ -349,7 +348,6 @@
       "nexus.connect",
       "synergy.director",
       "pin.aruba.url",
-      "nexus.proxy"]
-      
-
+      "nexus.proxy"
+  ]
 }
