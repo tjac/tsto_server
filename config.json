@@ -5,6 +5,8 @@
   "towns_dir": "towns",
   "country": "US",
 
+  "game_assets_url": "/gameassets",
+
   "active_town": "mytown",
   
   "identifiers": {
@@ -296,8 +298,6 @@
         [138,"MaxSimultaneousBGDownloadsAndroid","1"],
         [139,"MaxSimultaneousBGDownloadsAmazon","1"],
         [140,"BGDownloadQuickCheckEnabled","0"],
-        [1010,"MHVersion", "1"],
-        [1011,"RequestsPerSecond","29"],
         [996,"GeolocationCountryCode","US"],
         [997,"GeolocationCountryName","United States"],
         [950,"TntAuthUrl", "https://auth.tnt-ea.com"],
@@ -305,7 +305,6 @@
         [952,"TntNucleusUrl","https://nucleus.tnt-ea.com"],
         [953,"OriginFriendUrl","https://m.friends.dm.origin.com"],
         [954,"SynergyUrl", "https://synergy.eamobile.com:443"],
-        [1015,"FriendsProxyUrl","https://friends.simpsons-ea.com"],
         [949,"SynergyFormatUrl","https://%s.sn.eamobile.com"],
         [995,"KillswitchAllowFriends","0"],
         [994,"ServerVersion","local"],
@@ -313,7 +312,10 @@
         [1001,"ParamUrl.ea.na","https://kaleidoscope.ea.com?tag=81c4640c68f5eee1"],  
         [1002,"ParamUrl.ea.row","https://kaleidoscope.ea.com?tag=4dada08e18133a83"],  
         [1003,"TntUrl","https://tnt-auth.ea.com?trackingKey=3e92a468de3d2c33"],  
-        [1011,"MH_Version","2"]    
+        [1010,"MHVersion", "1"],
+        [1011,"RequestsPerSecond","29"],
+        [1011,"MH_Version","2"],
+        [1015,"FriendsProxyUrl","https://friends.simpsons-ea.com"]
   ],
 
   "server_redirects": [
