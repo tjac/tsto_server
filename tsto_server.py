@@ -369,11 +369,11 @@ class TheSimpsonsTappedOutLocalServer:
                   },
                   {
                       "key": "origincasualapp.url",
-                      "value": f"{self.server_ip}/loader/mobile/ios/"
+                      "value": f"{self.server_url}/loader/mobile/ios/"
                   },
                   {
                       "key": "akamai.url",
-                      "value": f"http://{self.server_ip}/skumasset/gameasset/" #"http://cdn.skum.eamobile.com/skumasset/gameasset/"
+                      "value": f"{self.server_url}/skumasset/gameasset/" #"http://cdn.skum.eamobile.com/skumasset/gameasset/"
                   }
               ],
               "telemetryFreq": 300
@@ -381,7 +381,7 @@ class TheSimpsonsTappedOutLocalServer:
 
     # Setup URL redirects to our server
     for key in self.config["server_redirects"]:
-      resp["serverData"].append({"key": key, "value": f"{self.server_ip}"})
+      resp["serverData"].append({"key": key, "value": f"{self.server_url}"})
 
     return jsonify(resp)
 
