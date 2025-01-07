@@ -1,0 +1,23 @@
+---
+services:
+  server:
+    image: ghcr.io/d-fens/tsto_server:master
+    command: python tsto_server.py ${TSTO_URL}
+    ports:
+      - 9000:9000
+    volumes:
+      - ./config.json:/app/config.json
+      # download location by mirror service, if alternative tool then ammend
+      - ./static/assets/oct2018-4-35-0-uam5h44a.tstodlc.eamobile.com/netstorage/gameasset/direct/simpsons/:/app/dlc/:ro
+      
+  patcher:
+    image: ghcr.io/d-fens/tstoapkpatcher:main
+    volumes:
+      - ./static/apk/:/apk
+    env_file:
+      - .env
+
+  mirror:
+    image: ghcr.io/d-fens/tstomirror:main
+    volumes:
+      - ./static/assets/:/output/
