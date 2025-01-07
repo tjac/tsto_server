@@ -116,58 +116,75 @@ class TheSimpsonsTappedOutLocalServer:
     # set the run_tutorial to true.
     if not self.town_filename:
       # This is for loading a blank/tutorial town
+      print("No town found. Generating blank world.")
       self.land_proto: LandData_pb2.LandMessage = LandData_pb2.LandMessage()
       self.land_proto.friendData.dataVersion = 72
       self.land_proto.friendData.hasLemonTree = False
       self.land_proto.friendData.language = 0
       self.land_proto.friendData.level = 0
-      self.land_proto.friendData.name = ""
+      self.land_proto.friendData.name = "tsto_server_blank"
       self.land_proto.friendData.rating = 0
       self.land_proto.friendData.boardwalkTileCount = 0
       self.run_tutorial = True
+      print(f"[r]land_proto is {len(self.land_proto.SerializeToString())} bytes")
+
       return True
     
     # Try to load the specified world from disk
     town_file_path = os.path.join(self.towns_dir, self.town_filename)
     if not os.path.isfile(town_file_path):
       # Unable to find the file, so generate a blank town and save it
+      print(f"{town_file_path} wasn't found")
       self.land_proto: LandData_pb2.LandMessage = LandData_pb2.LandMessage()
       self.land_proto.friendData.dataVersion = 72
       self.land_proto.friendData.hasLemonTree = False
       self.land_proto.friendData.language = 0
       self.land_proto.friendData.level = 0
-      self.land_proto.friendData.name = ""
+      self.land_proto.friendData.name = "tsto_server_blank"
       self.land_proto.friendData.rating = 0
       self.land_proto.friendData.boardwalkTileCount = 0
       self.run_tutorial = True
+      print(f"[r]land_proto is {len(self.land_proto.SerializeToString())} bytes")
       return self.save_town()
 
     # Try to load the specified town...
     with open(town_file_path, "rb") as f:
       # Check if we have a teamtsto.org backup.
-      header = f.read(2)
-      if header in (b'\x0a\x26', b'\x0a\x27', b'\x0a\x28'):
-        f.seek(0)
-      else:
-        f.seek(0x0c)  # strip the header off the protobuf if we do.
+      try:
+        self.land_proto.ParseFromString(f.read())
+      except google.protobuf.message.DecodeError:
+        try:
+          f.seek(0x0c)      # see if this might be a teamtsto.org backup
+          self.land_proto.ParseFromString(f.read())          
+        except google.protobuf.message.DecodeError:
+          print("[error] Unable to load {self.town_filename} town.")
+          return False
+      if self.land_proto.HasField("id"):
+        self.user_user_id = self.land_proto.id
+      if self.debug:
+        print(f"[r]land_proto is {len(self.land_proto.SerializeToString())} bytes") 
+        print(f"   land id is now {self.user_user_id}")     
 
-      self.land_proto.ParseFromString(f.read())
     return True
 
   def save_town(self) -> bool:
     """Save the current .land_proto to disk as .town_filename."""
     # If there somehow isn't an active .land_proto, return error.
     if not self.land_proto:
+      print(f"[error] .land_proto is None. Unable to save.")
       return False
     
     # If there isn't a name for the town, return error.
     if not self.town_filename:
+      print(f"[error] .town_filename is None. Unable to save.")
       return False
 
     # Construct the full path/name
     town_file_path = os.path.join(self.towns_dir, self.town_filename)
     with open(town_file_path, "wb") as f:
       f.write(self.land_proto.SerializeToString())
+      print(f"[w]land_proto is {len(self.land_proto.SerializeToString())} bytes")
+
 
     return True
 
@@ -181,7 +198,8 @@ class TheSimpsonsTappedOutLocalServer:
                             view_func = self.get_direction_by_bundle)  # ios
 
     # server: oct2018-4-35-0-uam5h44a.tstodlc.eamobile.com
-    self.app.add_url_rule("/netstorage/gameasset/direct/simpsons/dlc/<string:filename>",
+    self.app.add_url_rule(# "/netstorage/gameasset/direct/simpsons/dlc/<string:filename>",
+                          "/gameassets/<string:directory>/<string:filename>",
                             view_func = self.dlc_download)
 
     # server: user.sn.eamobile.com
@@ -199,8 +217,6 @@ class TheSimpsonsTappedOutLocalServer:
                             view_func = self.pid_personas)
     self.app.add_url_rule("/proxy/identity/progreg/code", methods=["POST"],
                             view_func = self.progreg_code)
-    self.app.add_url_rule("/mh/games/bg_gameserver_plugin/friendData/origin",
-                            view_func = self.friendData_origin)
 
     # server: accounts.ea.com
     self.app.add_url_rule("/connect/auth", view_func = self.connect_auth)
@@ -227,16 +243,11 @@ class TheSimpsonsTappedOutLocalServer:
                             view_func = self.pinEvents)
 
     # server: prod.simpsons-ea.com
-    self.app.add_url_rule("/mh/games/lobby/time", view_func = self.lobby_time)
+    self.app.add_url_rule("/mh/gameplayconfig", view_func = self.gameplayconfig)
     self.app.add_url_rule("/mh/games/bg_gameserver_plugin/trackinglog/",
                             methods=["POST"], view_func = self.tracking_log)
     self.app.add_url_rule("/mh/games/bg_gameserver_plugin/protoClientConfig/",
                             view_func = self.protoClientConfig)
-    self.app.add_url_rule("/mh/gameplayconfig", view_func = self.gameplayconfig)
-    self.app.add_url_rule("/mh/users", methods=["PUT", "GET"],
-                            view_func = self.mh_user)
-    self.app.add_url_rule("/mh/userstats", methods=["POST"],
-                            view_func = self.userstats)
     self.app.add_url_rule("/mh/games/bg_gameserver_plugin/protoWholeLandToken/<land_id>/", 
                             methods=["POST"],
                             view_func = self.protoWholeLandToken)
@@ -254,6 +265,17 @@ class TheSimpsonsTappedOutLocalServer:
                             view_func = self.extraLandUpdate)
     self.app.add_url_rule("/mh/games/bg_gameserver_plugin/event/<land_id>/protoland/",
                             view_func = self.plugin_event)
+    self.app.add_url_rule("/mh/games/bg_gameserver_plugin/friendData",
+                            methods=["POST"], view_func = self.friend_data)
+    self.app.add_url_rule("/mh/games/bg_gameserver_plugin/friendData/origin",
+                            methods=["GET"], view_func = self.friend_data)
+    self.app.add_url_rule("/mh/games/lobby/time", view_func = self.lobby_time)
+    self.app.add_url_rule("/mh/users", methods=["PUT", "GET"],
+                            view_func = self.mh_user)
+    self.app.add_url_rule("/mh/userstats", methods=["POST"],
+                            view_func = self.userstats)
+
+
 
     # server: any (generic rule)
 
@@ -351,7 +373,7 @@ class TheSimpsonsTappedOutLocalServer:
                   },
                   {
                       "key": "akamai.url",
-                      "value": "http://cdn.skum.eamobile.com/skumasset/gameasset/"
+                      "value": f"http://{self.server_ip}/skumasset/gameasset/" #"http://cdn.skum.eamobile.com/skumasset/gameasset/"
                   }
               ],
               "telemetryFreq": 300
@@ -366,16 +388,22 @@ class TheSimpsonsTappedOutLocalServer:
 
   # server: oct2018-4-35-0-uam5h44a.tstodlc.eamobile.com
 
-  def dlc_download(self, filename: str):
+  def dlc_download(self, directory: str, filename: str):
+    """Handler for oct2018-4-35-0-uam5h44a.tstodlc.eamobile.com/netstorage/gameasset/direct/simpsons/<string:directory>/<string:filename>"""
     try:
-        filename = secure_filename(filename)  # Sanitize the filename
-        file_path = os.path.join(self.dlc_dir, filename)
-        if os.path.isfile(file_path):
-            return send_file(file_path, as_attachment=True)
-        else:
-            return make_response(f"File '{filename}' not found.", 404)
+      directory = secure_filename(directory)    # Sanitize the directory
+      filename = secure_filename(filename)      # Sanitize the filename
+      file_path = os.path.join(self.dlc_dir, directory, filename)
+      if self.debug:
+        print(f"requested file: {file_path}")
+      if os.path.isfile(file_path):
+          return send_file(file_path, mimetype="application/zip")#, as_attachment=True)
+      else:
+          return make_response(f"File '{filename}' not found.", 404)
     except Exception as e:
-        return make_response(f"Error: {str(e)}", 500) 
+      if self.debug:
+        print(f"Exception: {e}")
+      return make_response(f"Error: {str(e)}", 500) 
 
 
   # server: user.sn.eamobile.com
@@ -527,8 +555,8 @@ class TheSimpsonsTappedOutLocalServer:
 
     return ""
 
-  def friendData_origin(self):
-    """Handler for gateway.simpsons-ea.com/mh/games/bg_gameserver_plugin/friendData/origin"""
+  def friend_data(self):
+    """Handler for gateway.simpsons-ea.com/mh/games/bg_gameserver_plugin/friendData[/origin]"""
     friend_data = GetFriendData_pb2.GetFriendDataResponse()
     response = make_response(friend_data.SerializeToString())
     response.headers['Content-Type'] = 'application/x-protobuf'
@@ -974,7 +1002,10 @@ class TheSimpsonsTappedOutLocalServer:
 
     if request.method != "POST":
       abort(500)
-      
+
+    # Deserialize the current town state
+    self.land_proto.ParseFromString(request.data)
+
     # Save town
     self.save_town()
 

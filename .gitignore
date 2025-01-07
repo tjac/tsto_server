@@ -1,5 +1,5 @@
-
 *.pyc
 *.bak
-*.bak
-*.bak
+static/
+dlc/
+certs/
