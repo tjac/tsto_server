@@ -4,15 +4,17 @@ This is a work-in-progress (WIP) release of a local server that allows you to pl
 
 Before you run this program, you will need a few things:
 
-Optional) A copy of your existing world (see [teamtsto.org](https://teamtsto.org/) for making a backup of your town) or a backup of your friends' town (see [tsto_friend_puller](https://github.com/tjac/tsto_friend_puller)). Save the file to the "towns" directory WITHOUT any file extension.
+[Docker](https://www.docker.com/get-started/) needs to be setup and operational.
 
-1) Create a folder called `tsto`
-2) Download [docker-compose.yml](https://raw.githubusercontent.com/d-fens/tsto_server/refs/heads/master/docker-compose.yml) and [.env](https://raw.githubusercontent.com/d-fens/tsto_server/refs/heads/master/.env) to the `tsto` folder.
-3) Download a copy of the APK of the [The Simpsons: Tapped Out game](https://apkpure.com/the-simpsons%E2%84%A2-tapped-out/com.ea.game.simpsons4_row) and place within the `tsto` folder.
-4) Edit the .env file and replace the APK with the name and the IP address with your machine IP.
-5) Install the APK on an Android phone or tablet. Optionally, you can play the game on your PC by using [BlueStacks](https://www.bluestacks.com/download.html) or equivalent emulator.
-6) Run `docker-compose up -d` from a command prompt in the `tsto` folder.
-7) Optional: Run `docker compose logs -f` to see issues with containers. 
+
+1) Optional: A copy of your existing world (see [teamtsto.org](https://teamtsto.org/) for making a backup of your town) or a backup of your friends' town (see [tsto_friend_puller](https://github.com/tjac/tsto_friend_puller)). Save the file to the "towns" directory WITHOUT any file extension.
+2) Create a folder called `tsto`
+3) Download [docker-compose.yml](https://raw.githubusercontent.com/d-fens/tsto_server/refs/heads/master/docker-compose.yml) and [.env](https://raw.githubusercontent.com/d-fens/tsto_server/refs/heads/master/.env) to the `tsto` folder.
+4) Download a copy of the APK of the [The Simpsons: Tapped Out game](https://apkpure.com/the-simpsons%E2%84%A2-tapped-out/com.ea.game.simpsons4_row) and place within the `tsto` folder.
+5) Edit the .env file and replace the APK with the name and the IP address with your machine IP.
+6) Install the APK on an Android phone or tablet. Optionally, you can play the game on your PC by using [BlueStacks](https://www.bluestacks.com/download.html) or equivalent emulator.
+7) Run `docker-compose up -d` from a command prompt in the `tsto` folder.
+8) Optional: Run `docker compose logs -f` to see issues with containers. 
 
 # How to play
 
