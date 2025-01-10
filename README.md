@@ -16,6 +16,12 @@ Before you run this program, you will need a few things:
 7) Run `docker-compose up -d` from a command prompt in the `tsto` folder.
 8) Optional: Run `docker compose logs -f` to see issues with containers. 
 
+# How Update
+
+1) Go back into the folder `tsto` and open a command prompt
+2) Run `docker compose pull`
+3) Run `docker compose up -d`
+
 # How to play
 
 The system currently leverages the login AND anonymous play system to allow users to select different worlds to play. By default, clicking the "Tap to play anonymously" will load the "mytown" world. If the user wants to play a different town, they should click the EA Login button, then enter an email address that has the username equal to the town's filename in the towns directory. For example, if you want to load a town with the filename "mysupertown" then you would enter "mysupertown@a.a". The @ and . are required by the TSTO application, so any random domain will work. On the next screen, after pressing the "Log In" button, enter any 5 digit code and press "Verify". This will place the user back at the main screen. At this point pressing the "Tap to play anonymously" will load the newly selected world.
