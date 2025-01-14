@@ -33,5 +33,4 @@ Admittedly this is a fragile system. It is definitely a work-in-progress.
 # Current state
 
 * Only works with Android since you need to modify the APK to point to the new server.
-* Any changes you make to your town will not be saved. It will reset to the original state each time.
 * This is SUPER alpha. There are bugs and the code is fragile. Please report any bugs you find.
