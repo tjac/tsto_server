@@ -25,6 +25,18 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # The Simpson's Tapped Out protobufs
 from proto import *
 
+# midddleware to fix tsto apk patches that produces multiple slashes
+import re
+from werkzeug.wrappers import Request
+class GameassetsRewriteMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        request = Request(environ)
+        if '/gameassets/' in request.path:  # we only target the gameassets URL and reduce multiple /'s to just one each
+            environ['PATH_INFO'] = re.sub(r'/+', '/', request.path)
+        return self.app(environ, start_response)
 
 class TheSimpsonsTappedOutLocalServer:
   
@@ -32,7 +44,8 @@ class TheSimpsonsTappedOutLocalServer:
     # Generate the Flask application object
     self.app = Flask(__name__)
     Inflate(self.app)     # Enable ability to auto decompress gzip responses
-
+    self.app.wsgi_app = GameassetsRewriteMiddleware(self.app.wsgi_app)
+    
     # Load the configuration first
     self.CONFIG_FILENAME = "config.json"
     self.config: dict = {}
