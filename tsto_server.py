@@ -900,10 +900,10 @@ class TheSimpsonsTappedOutLocalServer:
 
     client_config = GameplayConfigData_pb2.GameplayConfigResponse()
 
-    for config_item in self.config.get("protoClientConfig"):
+    for config_item in self.config.get("protoGameConfig"):
       item = client_config.item.add()
-      item.name = config_item[1]
-      item.value = config_item[2]
+      item.name = config_item[0]
+      item.value = config_item[1]
 
     response = make_response(client_config.SerializeToString())
     response.headers['Content-Type'] = 'application/x-protobuf'
