@@ -23,23 +23,20 @@ from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # The Simpson's Tapped Out protobufs
-import AuthData_pb2
-import ClientConfigData_pb2
-import ClientLog_pb2
-import ClientMetrics_pb2
-import ClientTelemetry_pb2
-import Common_pb2
-import CustomerServiceData_pb2
-import Error_pb2
-import GambleData_pb2
-import GameplayConfigData_pb2
-import GetFriendData_pb2
-import LandData_pb2
-import MatchmakingData_pb2
-import OffersData_pb2
-import PurchaseData_pb2
-import WholeLandTokenData_pb2
+from proto import *
 
+# midddleware to fix tsto apk patches that produces multiple slashes
+import re
+from werkzeug.wrappers import Request
+class GameassetsRewriteMiddleware:
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        request = Request(environ)
+        if '/gameassets/' in request.path:  # we only target the gameassets URL and reduce multiple /'s to just one each
+            environ['PATH_INFO'] = re.sub(r'/+', '/', request.path)
+        return self.app(environ, start_response)
 
 class TheSimpsonsTappedOutLocalServer:
   
@@ -47,7 +44,8 @@ class TheSimpsonsTappedOutLocalServer:
     # Generate the Flask application object
     self.app = Flask(__name__)
     Inflate(self.app)     # Enable ability to auto decompress gzip responses
-
+    self.app.wsgi_app = GameassetsRewriteMiddleware(self.app.wsgi_app)
+    
     # Load the configuration first
     self.CONFIG_FILENAME = "config.json"
     self.config: dict = {}
@@ -302,7 +300,7 @@ class TheSimpsonsTappedOutLocalServer:
     """
     
     # start server: http version
-    self.app.run(debug=True, host="0.0.0.0", port=80) #443, ssl_context=("mydomain.com.crt", "mydomain.com.key"))
+    self.app.run(debug=True, host="0.0.0.0", port=9000) #443, ssl_context=("mydomain.com.crt", "mydomain.com.key"))
     #threading.Thread(target=lambda: self.app.run(host="0.0.0.0", port=80, debug=True, use_reloader=False)).start()
     
     # start server: https version
@@ -902,10 +900,10 @@ class TheSimpsonsTappedOutLocalServer:
 
     client_config = GameplayConfigData_pb2.GameplayConfigResponse()
 
-    for config_item in self.config.get("protoClientConfig"):
+    for config_item in self.config.get("protoGameConfig"):
       item = client_config.item.add()
-      item.name = config_item[1]
-      item.value = config_item[2]
+      item.name = config_item[0]
+      item.value = config_item[1]
 
     response = make_response(client_config.SerializeToString())
     response.headers['Content-Type'] = 'application/x-protobuf'

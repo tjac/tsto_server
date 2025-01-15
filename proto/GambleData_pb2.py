@@ -22,8 +22,8 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import Error_pb2 as Error__pb2
-import PurchaseData_pb2 as PurchaseData__pb2
+from . import Error_pb2 as Error__pb2
+from . import PurchaseData_pb2 as PurchaseData__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10GambleData.proto\x12\x04\x44\x61ta\x1a\x0b\x45rror.proto\x1a\x12PurchaseData.proto\"\xba\x01\n\x0eGambleResponse\x12\x30\n\x0fupdatedCurrency\x18\x01 \x01(\x0b\x32\x12.Data.CurrencyDataH\x00\x88\x01\x01\x12\x1c\n\x0f\x63urrencyAwarded\x18\x02 \x01(\x05H\x01\x88\x01\x01\x12&\n\x05\x65rror\x18\x03 \x01(\x0b\x32\x12.Data.ErrorMessageH\x02\x88\x01\x01\x42\x12\n\x10_updatedCurrencyB\x12\n\x10_currencyAwardedB\x08\n\x06_errorB\x16\n\x14\x63om.ea.simpsons.datab\x06proto3')
