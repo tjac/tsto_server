@@ -12,7 +12,7 @@
     
   },
   
-  "protoClientConfig":
+  "gameplayconfig":
   [
         ["MysteryBoxUpgrade_GameConfig:Enable:GambleCall", "0"],
         ["System:Disable:DynamicSteamer", "1"],
