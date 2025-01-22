@@ -1,0 +1,14 @@
+[project]
+name = "tsto_server"
+version = "0.0.1"
+description = "Local server for TSTO"
+dependencies = [
+  "protobuf>=5.29.2",
+  "flask",
+  "flask-inflate",
+  "Werkzeug",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
