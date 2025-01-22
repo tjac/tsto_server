@@ -152,12 +152,7 @@ class TheSimpsonsTappedOutLocalServer:
         self.land_proto.ParseFromString(f.read())
       except google.protobuf.message.DecodeError:
         try:
-          # Check if we have a teamtsto.org backup.
-          header = f.read(2)
-          if header in (b'\x0a\x26', b'\x0a\x27', b'\x0a\x28'):
-            f.seek(0)
-          else:
-            f.seek(0x0c)  # strip the header off the protobuf if we do.
+          f.seek(0x0c)      # see if this might be a teamtsto.org backup
           self.land_proto.ParseFromString(f.read())          
         except google.protobuf.message.DecodeError:
           print("[error] Unable to load {self.town_filename} town.")
