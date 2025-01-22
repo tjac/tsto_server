@@ -1,6 +1,6 @@
 This is a work-in-progress (WIP) release of a local server that allows you to play your Springfield in the "The Simpsons: Tapped Out" mobile app. 
 
-# How to Setup and Use
+# How to Setup and Use (Docker)
 
 Before you run this program, you will need a few things:
 
@@ -16,11 +16,19 @@ Before you run this program, you will need a few things:
 7) Run `docker-compose up -d` from a command prompt in the `tsto` folder.
 8) Optional: Run `docker compose logs -f` to see issues with containers. 
 
-# How Update
+## How Update
 
 1) Go back into the folder `tsto` and open a command prompt
 2) Run `docker compose pull`
 3) Run `docker compose up -d`
+
+# How to Setup and Use (Python)
+
+Note: Not working currently, requires work on changing the flask app to a more standard way of being called e.g. `create_app` or `make_app` factory and/or changes to the `config.json`. Work needed to add scripts for calling the server more cleanly too e.g. `tsto-server`.
+
+1. `pip install -U -e git+https://github.com/d-fens/tsto_server#egg=tsto_server`
+2. Download `https://raw.githubusercontent.com/d-fens/tsto_server/refs/heads/master/config.json` and place in a directory.
+3. Run `flask --app tsto_server run` in the same directory as the `config.json`
 
 # How to play
 
