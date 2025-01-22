@@ -12,7 +12,7 @@
     
   },
   
-  "gameplayconfig":
+  "protoClientConfig":
   [
         ["MysteryBoxUpgrade_GameConfig:Enable:GambleCall", "0"],
         ["System:Disable:DynamicSteamer", "1"],
@@ -198,7 +198,7 @@
         ["THOHXXX_GameConfig:Dates:THOHXXX_MERCH_TenCommandments_End", "2019-11-20 14:00"]
   ],
   
-  "protoClientConfig": [
+  "gameplayconfig": [
         [0,"AppUrl.ios.na","https://apps.apple.com/app/id497595276?ls=1&mt=8"],
         [1,"GameClient.MaxBundleSize","50"],
         [2,"MinimumVersion.ios","4.69.0"],
