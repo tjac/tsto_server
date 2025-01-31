@@ -1,15 +1,39 @@
 {
-  "debug": false,
+  "debug": true,
+  "http_debug": true,
+  "server_debug_mode": true,
   "run_tutorial": false,
-  "dlc_dir": "dlc",
+  "dlc_dir": "gameassets",
   "towns_dir": "towns",
   "country": "US",
-  "reverse_proxy": false,
-  "game_assets_url": "/gameassets",
+  "reverse_proxy": true,
+  "game_assets_url": "/gameassets/",
   "active_town": "mytown",
   
-  "identifiers": {
+  "listening_port": 80,
+  "listening_ip": "0.0.0.0",
+  "server_url": "http://10.10.10.10",
+  
+  "secret_key": "2Tok8RykmQD41uWDv5mI7JTZ7NIhcZAIPtiBm4Z5",
+  "client_secret": "D0fpQvaBKmAgBRCwGPvROmBf96zHnAuZmNepQht44SgyhbCdCfFgtUTdCezpWpbRI8N6oPtb38aOVg2y",
+  
+  "friends_config":
+  {
+    "randomize_friends": true,
+    "max_friends": 50,
+    "force_friend_name_order_randomization": false
+  },
+
+  "identity_info":
+  {
+    "auth_base_id": 69834,
+    "anon_base_id": 59392,
+    "intm_base_id": 23530,
     
+    "persona_base": 10070000000000,
+    "authenticator_base": 10020000000000,
+    "multiplier": 106969
+
   },
   
   "gameplayconfig":

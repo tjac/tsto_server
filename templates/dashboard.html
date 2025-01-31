@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post" action="/controller/api/update">
+      <label for="playmode">Play Mode: </label>
+      <select name="playmode">
+        {% for offset, name in play_modes %}
+        <option value="{{offset}}"{% if offset == current_play_mode %} SELECTED{% endif %}>{{name}}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+{% endblock %}
