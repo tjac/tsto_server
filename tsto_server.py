@@ -828,29 +828,88 @@ class TheSimpsonsTappedOutLocalServer:
     listening_ip = self.config.get("listening_ip", "0.0.0.0")
     listening_port = int(self.config.get("listening_port", 9000))
     self.app.run(debug=http_debug, host=listening_ip, port=listening_port)
-
   ##############################################################################
   # Utility functions
   ##############################################################################
 
-    # Disable to the logging noise from the dnserver
-    dnserver_logger = logging.getLogger('dnserver')
-    dnserver_logger.setLevel(logging.ERROR)
-    
-    dnsserver.add_record(Zone(host="syn-dir.sn.eamobile.com", type="A", answer=self.server_ip))
-    dnsserver.add_record(Zone(host="syn-dir.sn.eamobile.com", type="AAAA", answer=local_ipv6))
-    dnsserver.start()
-    assert dnsserver.is_running
-    """
-    
-    # start server: http version
-    self.app.run(debug=True, host="0.0.0.0", port=9000) #443, ssl_context=("mydomain.com.crt", "mydomain.com.key"))
-    #threading.Thread(target=lambda: self.app.run(host="0.0.0.0", port=80, debug=True, use_reloader=False)).start()
-    
-    # start server: https version
-    #cert_key = os.path.join("certs", "syn-dir.sn.eamobile.com-key.pem")
-    #cert = os.path.join("certs", "syn-dir.sn.eamobile.com.pem")
-    #self.app.run(debug=True, host="0.0.0.0", port=443, ssl_context=(cert, cert_key))
+  def log_debug(self, msg: str, frame_depth = 1):
+    """Prints msg to stdout if debug set with function info prepended."""
+    # If this is called by a child function (e.g. print_args) then the
+    # frame_depth should be set to 2 so that the caller's info is used
+    if self.debug:
+      caller_class = self.__class__.__name__
+      caller_name = sys._getframe(frame_depth).f_code.co_name
+      print(f"[DEBUG:{caller_class}.{caller_name}] {msg}")
+
+  def log_error(self, msg: str, frame_depth = 1):
+    """Prints msg to stdout always"""
+    # If this is called by a child function (e.g. print_args) then the
+    # frame_depth should be set to 2 so that the caller's info is used
+    caller_class = self.__class__.__name__
+    caller_name = sys._getframe(frame_depth).f_code.co_name
+    print(f"[ERROR:{caller_class}.{caller_name}] {msg}")
+
+  def log_http_debug(self, msg: str, frame_depth = 1):
+    """Prints msg to stdout if debug set with function info prepended."""
+    # If this is called by a child function (e.g. print_args) then the
+    # frame_depth should be set to 2 so that the caller's info is used
+    if self.http_debug:
+      caller_class = self.__class__.__name__
+      caller_name = sys._getframe(frame_depth).f_code.co_name
+      print(f"[{caller_class}.{caller_name}] {msg}")
+
+  def print_headers(self):
+    """Prints the request headers"""
+    if self.http_debug:
+      self.log_http_debug("Request Headers:", 2)
+      pprint.pprint(request.headers)
+
+  def print_args(self):
+    """Prints the query params"""
+    if self.http_debug:
+      self.log_http_debug("Request Query Params:", 2)
+      pprint.pprint(request.args)
+
+  def print_response(self, response):
+    """Prints the response and response headers"""
+    if self.http_debug:
+      if hasattr(response, "headers"):
+        self.log_debug("Response Headers:", 2)
+        pprint.pprint(response.headers)
+      self.log_debug("Response:", 2)
+      print(response.get_data(True))
+
+  def fix_pad(self, s: str) -> str:
+    """Returns base64 string with proper padding."""
+    pad_size = (4 - (len(s) % 4)) & 3
+    s += "=" * pad_size
+    return s
+
+  def generate_random_bytes(self, length: int) -> bytes:
+    """Generates a random sequence of bytes of length."""
+    array = bytearray(length)
+    for i in range(length):
+      array[i] = random.randint(0,255)
+    return array
+
+  def now_int(self) -> int:
+    """Returns the current time (UTC) as unix timestamp integer."""
+    ts = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+    ts -= self.time_offset
+    return ts
+
+  def set_game_mode(self, new_time: int):
+    """Adjust the time_offset based on the desired new_time"""
+    if not new_time:
+      # reset the time to now.
+      self.time_offset = 0
+      self.current_play_mode = 0
+    else:    
+      # Calculate the time delta value
+      now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+      self.time_offset = now - new_time
+
+    self.current_play_mode = new_time
 
 
   ##############################################################################
