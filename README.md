@@ -21,7 +21,7 @@ Once you have done the above, execute the server by using the following command:
 Run your modified APK on your Android device.
 
 # APK generation
-In order to use this server, you will need to modify the game APK to point to your local computer. The TappedOutReborn group has provided a very handy tool for generating the modified APK here: [Patch-Apk](https://github.com/TappedOutReborn/Patch-Apk). When using the install.sh script set both the NEW_GAMESERVER_URL and NEW_DLCSERVER_URL to the IP address or domain of the machine hosting your server (e.g. ```http://x.x.x.x```) Do not use 127.0.0.1 or localhost for your server's address.
+In order to use this server, you will need to modify the game APK to point to your local computer. The TappedOutReborn group has provided a very handy tool for generating the modified APK here: [Patch-Apk](https://github.com/TappedOutReborn/Patch-Apk). When using the install.sh script set both the NEW_GAMESERVER_URL to the IP address or domain of the machine hosting your server (e.g. ```http://x.x.x.x```) and NEW_DLCSERVER_URL to the same but with /gameassets/ appended (e.g. ```http://x.x.x.x/gameassets/```). Do not use 127.0.0.1 or localhost for your server's address.
 
 
 # How to play
