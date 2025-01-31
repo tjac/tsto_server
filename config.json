@@ -10,7 +10,7 @@
   "game_assets_url": "/gameassets/",
   "active_town": "mytown",
   
-  "listening_port": 80,
+  "listening_port": 9000,
   "listening_ip": "0.0.0.0",
   "server_url": "http://10.10.10.10",
   
